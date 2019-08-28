@@ -5,6 +5,7 @@ import com.google.gson.stream.JsonReader;
 
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,8 +13,11 @@ import java.util.List;
 public class JsonParser {
     public static void main(String[] args) {
         JsonParser jp = new JsonParser();
-        jp.parseSimple("src/main/java/jsonFiles/exJsonSimple.json");
-        //jp.parse("src/main/java/jsonFiles/exJsonSimple.json");
+
+        //jp.parseSimple("src/main/java/jsonFiles/exJsonSimple.json");
+        //jp.parsePersonInfo("src/main/java/jsonFiles/exJsonPersonInfo.json");
+        jp.parsePeople("src/main/java/jsonFiles/exJsonPeople.json");
+
         //jp.parseJSONObjectWithArray("src/main/java/jsonFiles/exJsonWithArray.json");
     }
 
@@ -30,13 +34,51 @@ public class JsonParser {
             System.out.println(fruit);
         }
         catch(IOException e) {
-            System.out.println("Could not read the file");
+            System.out.println("Could not read the file:" + e);
+        }
+
+    }
+
+    /** This method demonstrates how to parse a json file
+     * that contains info about the person using GSON library.
+     * Person has an address that is also a Json object
+     *
+     * @param filePath path to the json file
+     */
+    public void parsePersonInfo(String filePath) {
+        Gson gson = new Gson();
+
+        try (FileReader br = new FileReader(filePath))  {
+            Person p = gson.fromJson(br, Person.class);
+            System.out.println(p);
+        }
+        catch(IOException e) {
+            System.out.println("Could not read the file: " + e);
+        }
+
+    }
+
+    /** This method demonstrates how to parse a json file
+     * that contains info about several people (value stored in a JSON Array).
+     * Uses GSON library.
+     *
+     * @param filePath path to the json file
+     */
+    public void parsePeople(String filePath) {
+        Gson gson = new Gson();
+
+        try (FileReader br = new FileReader(filePath))  {
+            People people = gson.fromJson(br, People.class);
+            System.out.println(people);
+        }
+        catch(IOException e) {
+            System.out.println("Could not read the file: " + e);
         }
 
     }
 
     /** Demonstrates another way of reading json files using GSON library
-     *
+     * Here we read each JSON token one by one.
      * @param filePath path to the file
      */
     public void parse(String filePath) {
